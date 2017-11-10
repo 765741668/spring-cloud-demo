@@ -1,0 +1,43 @@
+splitSize: 2
+server:
+  port: 8003
+
+eureka:
+  instance:
+    metadata-map:
+      user.name: ${security.user.name}
+      user.password: ${security.user.password}
+
+security:
+  user:
+    name: user
+    password: password
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    password: Pr0d@1234
+    username: root
+    url: jdbc:mysql://192.168.1.91:3306/push
+  redis:
+      database: 0
+      host: 192.168.1.91
+      port: 6379
+      password:
+      pool:
+        max-active: 8
+        max-wait: -1
+        max-idle: 8
+  jackson:
+      date-format: yyyy-MM-dd HH:mm:ss
+      time-zone: GMT+8
+  mvc:
+      date-format: yyyy-MM-dd HH:mm:ss
+
+#  oauth2:
+#    client:
+#      clientId: svca-service
+#      clientSecret: ${security.user.password}
+#      accessTokenUri: http://${authserver.hostname}:${authserver.port}${authserver.contextPath}/oauth/token
+#      grant-type: client_credentials
+#      scope: server

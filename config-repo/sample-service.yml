@@ -1,0 +1,33 @@
+server:
+  port: 8001
+
+eureka:
+  instance:
+    metadata-map:
+      user.name: ${security.user.name}
+      user.password: ${security.user.password}
+
+security:
+  user:
+    name: user
+    password: password
+#  oauth2:
+#    client:
+#      clientId: svca-service
+#      clientSecret: ${security.user.password}
+#      accessTokenUri: http://${authserver.hostname}:${authserver.port}${authserver.contextPath}/oauth/token
+#      grant-type: client_credentials
+#      scope: server
+
+spring:
+  redis:
+    modle: single #redis应用模式:single,cluster
+    database: 0
+    nodes:  "[\"192.168.1.91:6379\"]"  # 集群配置："[\"192.168.1.123:6000\",\"192.168.1.124:6000\",\"192.168.1.125:6000\"]"
+    password: ""
+    config:
+      maxTotal: 500
+      maxIdle: 10
+      minIdle: 1
+      maxWaitMillis: 5000
+      testOnBorrow: false

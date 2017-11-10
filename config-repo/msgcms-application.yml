@@ -1,0 +1,9 @@
+server:
+  port: 7703
+
+spring:
+  datasource:
+    url: jdbc:mysql://192.168.1.91/test?verifyServerCertificate=false&useSSL=false&requireSSL=false
+    username: root
+    password: Pr0d@1234
+    driver-class-name: com.mysql.jdbc.Driver

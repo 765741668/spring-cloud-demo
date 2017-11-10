@@ -1,0 +1,42 @@
+server:
+  port: 7702
+  
+spring: 
+  datasource:
+    url: jdbc:mysql://192.168.1.91/test?verifyServerCertificate=false&useSSL=false&requireSSL=false
+    username: root
+    password: Pr0d@1234
+    driver-class-name: com.mysql.jdbc.Driver
+  redis: 
+    database: 0
+    host: 192.168.1.91 
+    port: 6379         
+    pool: 
+      max-active: 8  
+      max-wait: -1
+      max-idle: 8
+      min-idle: 0
+    timeout: 5000
+  mail: 
+    host: smtp.163.com
+    username: yf306332514@163.com
+    password: 381883681
+    properties:
+      mail: 
+        smtp: 
+          auth: true
+          starttls: 
+            enable: true
+            required: true
+    
+alidayusms: 
+  accessKeyId: LTAIFTRLMgaNzU1y
+  accessKeySecret: ZRX7giOcfOhp3Jc8ojWV3UEW5wdM4H
+ 
+verifyCodeExpire: 2
+
+tokenexptime: 30
+mailActiveExpire: 172800
+resetPsdExpire: 3600
+
+emailSender: ${spring.mail.username}

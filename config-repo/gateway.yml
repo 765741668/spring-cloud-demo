@@ -1,0 +1,46 @@
+server:
+  port: 8080
+
+management:
+  security:
+    enabled: false
+
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 20000
+
+ribbon:
+  ReadTimeout: 10000
+  ConnectTimeout: 10000
+
+zuul:
+  ignoredServices: '*'
+  routes:
+    user-service:
+      path: /user/**
+      sensitiveHeaders:
+    sample-service:
+      path: /sample/**
+      sensitiveHeaders:
+    push-service:
+      path: /push/**
+      sensitiveHeaders:
+    msg-upload:
+      path: /upload/**
+      sensitiveHeaders:
+    msgcms-user: 
+      path: /cmsuser/**
+      sensitiveHeaders: 
+    msgcms-application: 
+      path: /app/**
+      sensitiveHeaders:
+    msgcms-oauth: 
+      path: /oauth/**
+      sensitiveHeaders:
+    msgcms-business: 
+      path: /business/**
+      sensitiveHeaders: 
