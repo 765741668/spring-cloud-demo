@@ -9,7 +9,7 @@ import com.hooray.client.UserServiceClient;
 import com.hooray.entity.User;
 
 @RestController
-public class SampleController {
+public class DemoController {
 	
 	@Autowired
 	private UserServiceClient userServiceClient;

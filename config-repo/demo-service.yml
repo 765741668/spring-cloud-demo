@@ -20,8 +20,13 @@ security:
 #      scope: server
 
 spring:
+  datasource:
+    url: jdbc:mysql://192.168.1.91/test?verifyServerCertificate=false&useSSL=false&requireSSL=false
+    username: root
+    password: Pr0d@1234
+    driver-class-name: com.mysql.jdbc.Driver
   redis:
-    modle: single #redis应用模式:single,cluster
+    cluster-modle: single #redis应用模式:single,cluster
     database: 0
     nodes:  "[\"192.168.1.91:6379\"]"  # 集群配置："[\"192.168.1.123:6000\",\"192.168.1.124:6000\",\"192.168.1.125:6000\"]"
     password: ""
@@ -31,3 +36,8 @@ spring:
       minIdle: 1
       maxWaitMillis: 5000
       testOnBorrow: false
+  jackson:
+        date-format: yyyy-MM-dd HH:mm:ss
+        time-zone: GMT+8
+    mvc:
+        date-format: yyyy-MM-dd HH:mm:ss

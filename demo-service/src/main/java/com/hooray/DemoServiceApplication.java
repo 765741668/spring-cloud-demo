@@ -14,10 +14,10 @@ import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 @EnableDiscoveryClient
 @EnableFeignClients
 @EnableWebSocket
-public class SampleServiceApplication {
+public class DemoServiceApplication {
 
 	public static void main(String[] args) throws InterruptedException {
-		SpringApplication.run(SampleServiceApplication.class, args);
+		SpringApplication.run(DemoServiceApplication.class, args);
 	}
 
 	@Bean

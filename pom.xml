@@ -9,15 +9,15 @@
 	<packaging>pom</packaging>
 	<name>${project.artifactId}</name>
 	<modules>
+		<module>registry</module>
 		<module>config</module>
 		<module>gateway</module>
 		<module>monitor</module>
-		<module>registry</module>
+		<module>zipkin</module>
 		<module>msg-common</module>
 		<module>msg-service</module>
-		<module>sample-service</module>
-		<module>zipkin</module>
-
+		<module>user-service</module>
+		<module>demo-service</module>
 	</modules>
 
 

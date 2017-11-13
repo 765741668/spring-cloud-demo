@@ -1,20 +1,18 @@
 package com.hooray.test;
 
-import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.LockSupport;
-
-import org.apache.commons.lang3.math.NumberUtils;
-import org.junit.Test;
-
 import com.mpush.api.srd.ServiceNode;
 import com.mpush.client.connect.ClientConfig;
 import com.mpush.client.connect.ConnClientChannelHandler;
 import com.mpush.common.security.CipherBox;
 import com.mpush.tools.log.Logs;
-
 import io.netty.channel.ChannelFuture;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.junit.Test;
+
+import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.LockSupport;
 
 public class ConnClientTestMain {
 
@@ -51,7 +49,7 @@ public class ConnClientTestMain {
 
     private static void testConnClient(int count, String userPrefix, int printDelay, boolean sync) throws Exception {
         Logs.init();
-        ConnClientBoot boot = new ConnClientBoot();
+        com.hooray.test.ConnClientBoot boot = new com.hooray.test.ConnClientBoot();
         boot.start().get();
 
         List<ServiceNode> serverList = boot.getServers();

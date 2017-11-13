@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>com.hooray</groupId>
-		<artifactId>msg-platform</artifactId>
+		<artifactId>spring-cloud-demo</artifactId>
 		<version>1.0-SNAPSHOT</version>
 	</parent>
 

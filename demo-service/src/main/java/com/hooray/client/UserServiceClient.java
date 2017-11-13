@@ -12,7 +12,7 @@ import com.hooray.entity.User;
 
 @FeignClient(name = "user-service", fallback = UserServiceClient.UserServiceClientFallback.class)
 public interface UserServiceClient {
-	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
+	@RequestMapping(value = "/user/{id}", method = RequestMethod.GET)
 	public User findById(@PathVariable("id") Long id);
 
 	@Component

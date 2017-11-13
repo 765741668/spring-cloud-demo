@@ -19,8 +19,8 @@ import java.util.Properties;
 @EnableCaching
 public class RedisConfig extends CachingConfigurerSupport{
 
-    @Value("${spring.redis.modle}")
-    private String modle;
+    @Value("${spring.redis.cluster-modle}")
+    private String clusterModle;
     @Value("${spring.redis.database}")
     private int database;
     @Value("${spring.redis.nodes}")
@@ -42,7 +42,7 @@ public class RedisConfig extends CachingConfigurerSupport{
     private void initCacheManager() {
         Properties prop = new Properties();
         //部署方式，单机：single,集群：cluster
-        prop.setProperty("redis.cluster-model", modle);
+        prop.setProperty("redis.cluster-model", clusterModle);
         // 格式是ip:port, 多个逗号隔开，每一项都加双引号
         prop.setProperty("redis.nodes", nodes);
         prop.setProperty("redis.password", password);

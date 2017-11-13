@@ -23,8 +23,8 @@ zuul:
     user-service:
       path: /user/**
       sensitiveHeaders:
-    sample-service:
-      path: /sample/**
+    demo-service:
+      path: /demo/**
       sensitiveHeaders:
     push-service:
       path: /push/**
