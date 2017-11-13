@@ -5,7 +5,7 @@
 
 # 启动
 1. 修改 hosts 将主机名指向到本地 127.0.0.1	registry config rabbitmq monitor 
-2. 顺序启基础服务 registry、config、monitor、zipkin、rabbitmq(没安装的话，在配置中将相关配置移除)
+2. 顺序启基础服务 rabbitmq(第三方组件)、 registry、config、monitor、zipkin
 3. 启动 gateway
 4. 启动微服务
 
