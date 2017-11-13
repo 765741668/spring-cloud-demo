@@ -1,6 +1,7 @@
 # spring-cloud-demo
 分布式配置中心config、服务注册中心registry(eureka)、网关gateway(zuul)、监控通知monitor、
 服务追踪分析zipkin、远程调用FeignClient(声明式http resful)
+以上组件除了（远程调用功能）都有内置ui界面操作
 
 # 启动
 1. 修改 hosts 将主机名指向到本地 127.0.0.1	registry config rabbitmq monitor 
