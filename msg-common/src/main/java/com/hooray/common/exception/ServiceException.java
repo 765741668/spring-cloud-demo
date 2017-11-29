@@ -1,5 +1,7 @@
 package com.hooray.common.exception;
 
+import com.hooray.common.utils.api.APIResultEnum;
+
 /**
  * service异常
  *
@@ -9,12 +11,21 @@ package com.hooray.common.exception;
  */
 public class ServiceException extends RuntimeException {
 
+	private static final long serialVersionUID = 656596713468286496L;
+	
 	/** 异常代码 */
 	private Integer errorCode;
 	/** 异常信息 */
 	private String errorMsg;
 	/** 根异常，保持异常链 */
 	private Throwable caused;
+
+	public ServiceException(APIResultEnum resultEnum, Throwable caused){
+		super(caused);
+		this.errorCode = resultEnum.getCode();
+		this.errorMsg = resultEnum.getMsg();
+	}
+
 
 	public ServiceException(Integer errorCode, String errorMsg) {
 		super(errorMsg);

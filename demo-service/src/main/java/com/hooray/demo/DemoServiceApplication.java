@@ -1,4 +1,4 @@
-package com.hooray;
+package com.hooray.demo;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -24,12 +24,5 @@ public class DemoServiceApplication {
 	public ServerEndpointExporter serverEndpointExporter() {
 		return new ServerEndpointExporter();
 	}
-
-//	@Bean(initMethod = "start", destroyMethod = "stop")
-//	public HoorayPushClient client() {
-//		HoorayPushClient client = new ClientBootstrap().addMessageListener(new SimpleClientTextMessageListener())
-//				.build();
-//		return client;
-//	}
 
 }

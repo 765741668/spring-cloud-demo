@@ -1,12 +1,25 @@
+logging:
+  file: /applogs/msg-platform/${spring.application.name}.log
+  level:
+    org: INFO
+    com: DEBUG
+  register-shutdown-hook: false
+
+#服务注册
 eureka:
   instance:
-#    hostname: 192.168.1.91
     hostname: registry
     prefer-ip-address: true
   client:
     service-url:
       defaultZone: http://user:${REGISTRY_SERVER_PASSWORD:password}@registry:8761/eureka/
 
+#feign远程调用开启熔断
+feign:
+  hystrix:
+    enabled: true
+
+#熔断
 hystrix:
   command:
     default:
@@ -15,13 +28,13 @@ hystrix:
           thread:
             timeoutInMilliseconds: 10000
 
+#负载
 ribbon:
   ReadTimeout: 5000
   ConnectTimeout: 5000
 
 spring:
   rabbitmq:
-    host: rabbitmq
     username: admin
     password: 123456
   sleuth:
@@ -31,11 +44,3 @@ spring:
       enabled: false
     scheduled:
       skip-pattern: "^org.*HystrixStreamTask$"
-
-
-security:
-  oauth2:
-    resource:
-      user-info-uri: http://${authserver.hostname}:${authserver.port}${authserver.contextPath}/current
-      
-secret: hooray_user

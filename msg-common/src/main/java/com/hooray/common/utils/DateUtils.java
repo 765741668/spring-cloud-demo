@@ -1,12 +1,13 @@
 package com.hooray.common.utils;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
+
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateFormatUtils;
 
 /**
  * 日期处理工具类
@@ -39,23 +40,29 @@ public class DateUtils extends org.apache.commons.lang3.time.DateUtils{
                         .concat("000000").substring(0, 15);
                 format = new SimpleDateFormat("ddMMMyyyyHHmmss", Locale.ENGLISH);
             } else {
-                StringBuffer sb = new StringBuffer(_dateStr);
-                String[] tempArr = _dateStr.split("\\s+");
-                tempArr = tempArr[0].split("-|\\/");
-                if (tempArr.length == 3) {
-                    if (tempArr[1].length() == 1) {
-                        sb.insert(5, "0");
+                try {
+                    new SimpleDateFormat(TIMESTAMP_PATTERN).parse(_dateStr);
+                    format = new SimpleDateFormat(TIMESTAMP_PATTERN);
+                } catch (ParseException e) {
+                    StringBuffer sb = new StringBuffer(_dateStr);
+                    String[] tempArr = _dateStr.split("\\s+");
+                    tempArr = tempArr[0].split("-|\\/");
+                    if (tempArr.length == 3) {
+                        if (tempArr[1].length() == 1) {
+                            sb.insert(5, "0");
+                        }
+                        if (tempArr[2].length() == 1) {
+                            sb.insert(8, "0");
+                        }
                     }
-                    if (tempArr[2].length() == 1) {
-                        sb.insert(8, "0");
+                    _dateStr = sb.append("000000").toString().replaceAll("[^0-9]",
+                            "").substring(0, 14);
+                    if (_dateStr.matches("\\d{14}")) {
+                        format = new SimpleDateFormat("yyyyMMddHHmmss");
                     }
-                }
-                _dateStr = sb.append("000000").toString().replaceAll("[^0-9]",
-                        "").substring(0, 14);
-                if (_dateStr.matches("\\d{14}")) {
-                    format = new SimpleDateFormat("yyyyMMddHHmmss");
                 }
             }
+
             Date date = format.parse(_dateStr);
             return date;
         } catch (Exception e) {

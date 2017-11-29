@@ -9,6 +9,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 /**
  * 异常类捕获处理: 捕获service已知异常，controller往外抛未知异常信息
@@ -34,15 +35,23 @@ public class ServiceExceptionHandler {
 	@ExceptionHandler(value=Exception.class)
 	@ResponseBody
 	public APIResult handle(Exception e) {
-		logger.error(e.getMessage(),e);
-		if(e instanceof ServiceException){
+		logger.error(e.getMessage(), e);
+		if (e instanceof ServiceException) {
 			ServiceException serviceException = (ServiceException) e;
 			return APIResultUtil.error(serviceException.getErrorCode(), serviceException.getMessage());
-		}else if(e instanceof DuplicateKeyException){
-			return APIResultUtil.error(APIResultEnum.FWK_DUPLICATEKEY.getCode(), APIResultEnum.FWK_DUPLICATEKEY.getMsg() + ": " + e.getMessage());
+		}
+
+		if (e instanceof DuplicateKeyException) {
+			return APIResultUtil.error(APIResultEnum.FWK_DUPLICATEKEY.getCode(),
+					APIResultEnum.FWK_DUPLICATEKEY.getMsg() + ": " + e.getMessage());
+		}
+
+		if (e instanceof MaxUploadSizeExceededException) {
+			return APIResultUtil.error(APIResultEnum.UPLOAD_MAXSIZE.getCode(),
+					APIResultEnum.UPLOAD_MAXSIZE.getMsg() + ": " + e.getMessage());
 		}
 		// 其他异常
-		return APIResultUtil.error(APIResultEnum.UNKOWM_ERROR.getCode(), APIResultEnum.UNKOWM_ERROR.getMsg() + ": " + e.getMessage());
+		return APIResultUtil.error(APIResultEnum.UNKOWM_ERROR.getCode(), APIResultEnum.UNKOWM_ERROR.getMsg());
 	}
 
 }

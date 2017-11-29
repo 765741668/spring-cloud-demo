@@ -18,7 +18,7 @@ public class PatternUtil {
 	 * 联通号码段:130、131、132、136、185、186、145 
 	 * 电信号码段:133、153、180、189 
 	 * 
-	 * @param cellphone 
+	 * @param telPhone
 	 * @return
 	 */
 	public static boolean checktelPhone(String telPhone) {

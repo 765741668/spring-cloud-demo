@@ -9,10 +9,20 @@ package com.hooray.common;
  */
 public class CommConstants {
 	
-	// API token验证
-	public final static String API_TOKEN = "api:token:";
-	
-	// Client Oauth2.0 token
-	public final static String CLIENT_AUTHTOKEN = "client:token:";
+	public static final int FILE_UNIT_SIZE = 1024;
+
+	/**
+	 * 系统配置的KEY值: 消息通道状态
+	 */
+	public static final String SYS_CONFIG_KEY_CHANNEL_STATUS = "channel_status";
+
+	/**
+	 * 系统配置的Value值: 1
+	 */
+	public static final String SYS_CONFIG_VALUE_YES = "1";
+	/**
+	 * 系统配置的Value值: 0
+	 */
+	public static final String SYS_CONFIG_VALUE_NO = "0";
 
 }

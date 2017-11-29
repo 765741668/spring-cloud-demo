@@ -1,18 +1,13 @@
 package com.hooray.dao;
 
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.jpa.repository.JpaRepository;
-
 import com.hooray.domain.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
-@CacheConfig(cacheNames="users")
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificationExecutor<User> {
+
 	@Override
-    @CachePut(key="#p0.name")
 	User save(User user);
 
-	@Cacheable(key="#p0")
 	User findByName(String name);
 }

@@ -1,10 +1,8 @@
-package com.hooray.config;
+package com.hooray.demo.config;
 
 import com.hooray.cache.api.spi.common.CacheManagerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CachingConfigurerSupport;
-import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.PostConstruct;
 import java.util.Properties;
@@ -15,8 +13,8 @@ import java.util.Properties;
  * @auth: Orochi-Yzh
  * @dateTime: 2017/11/6 11:33
  */
-@Configuration
-@EnableCaching
+//@Configuration
+//@EnableCaching
 public class RedisConfig extends CachingConfigurerSupport{
 
     @Value("${spring.redis.cluster-modle}")

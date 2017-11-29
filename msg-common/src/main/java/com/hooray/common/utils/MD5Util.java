@@ -1,6 +1,7 @@
 package com.hooray.common.utils;
 
 import java.security.MessageDigest;
+
 /**
  * MD5Util
  * 

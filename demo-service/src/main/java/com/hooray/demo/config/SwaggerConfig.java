@@ -1,4 +1,4 @@
-package com.hooray;
+package com.hooray.demo.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,12 +14,12 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @Configuration
 @EnableSwagger2
-public class SwaggerConfiguration {
+public class SwaggerConfig {
 
 	@Bean
 	public Docket docket() {
 		return new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo()).select()
-				.apis(RequestHandlerSelectors.basePackage("com.hooray.controller")).paths(PathSelectors.any()).build();
+				.apis(RequestHandlerSelectors.basePackage("com.hooray.demo.controller")).paths(PathSelectors.any()).build();
 	}
 
 	private ApiInfo apiInfo() {

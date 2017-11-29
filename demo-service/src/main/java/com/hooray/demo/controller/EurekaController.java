@@ -1,4 +1,4 @@
-package com.hooray.controller;
+package com.hooray.demo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;

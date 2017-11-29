@@ -7,13 +7,8 @@ import io.jsonwebtoken.SignatureAlgorithm;
 
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
-
-import com.google.gson.Gson;
-
-import java.io.UnsupportedEncodingException;
 import java.security.Key;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -25,18 +20,11 @@ import java.util.Map;
  */
 public class JwtHelper {
 
-    public static Claims parseJWT(String jsonWebToken, String base64Security) {
-        try {
-            Claims claims = Jwts.parser()
-                    .setSigningKey(DatatypeConverter.parseBase64Binary(base64Security))
-                    .parseClaimsJws(jsonWebToken).getBody();
-            return claims;
-        } catch (Exception ex) {
-        	ex.printStackTrace();
-        	
-            return null;
-        }
-    }
+	public static Claims parseJWT(String jsonWebToken, String base64Security) {
+		Claims claims = Jwts.parser().setSigningKey(DatatypeConverter.parseBase64Binary(base64Security))
+				.parseClaimsJws(jsonWebToken).getBody();
+		return claims;
+	}
 
     public static String createJWT(Map<String, Object> claims, long TTLMillis, String base64Security) {
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;

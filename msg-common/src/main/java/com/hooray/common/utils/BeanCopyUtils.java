@@ -1,5 +1,7 @@
 package com.hooray.common.utils;
 
+import com.hooray.common.exception.ServiceException;
+import com.hooray.common.utils.api.APIResultEnum;
 import org.apache.commons.beanutils.BeanUtilsBean;
 import org.apache.commons.beanutils.ConvertUtilsBean;
 import org.apache.commons.beanutils.PropertyUtilsBean;
@@ -10,7 +12,6 @@ import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.*;
@@ -24,7 +25,7 @@ public class BeanCopyUtils {
     private static Map<String, Map<String, PropertyDescriptor>> cache = new ConcurrentHashMap<>();
 
     private static Map<String, List<String>> fieldCache = new HashMap<>();
-    
+
     /**
      * 值复制
      *
@@ -32,9 +33,9 @@ public class BeanCopyUtils {
      * @param dest
      * @param setDefaultValForNull 是否为null值属性设置默认值（null=>0,null=>""）
      * @return
-     * @throws BeanConverterException
+     * @throws ServiceException
      */
-    public static <T> T copy(Object src, T dest, boolean setDefaultValForNull) throws BeanConverterException {
+    public static <T> T copy(Object src, T dest, boolean setDefaultValForNull) throws ServiceException {
         if (src == null) {
             return null;
         }
@@ -66,6 +67,7 @@ public class BeanCopyUtils {
 
                         destDescriptor.setWriteMethod(writeMethod);
                     } catch (Exception e) {
+                        throw new ServiceException(APIResultEnum.VALID_FAIL, e);
                     }
                 }
                 if (writeMethod != null) {
@@ -95,11 +97,11 @@ public class BeanCopyUtils {
 
             return dest;
         } catch (Exception e) {
-            throw new BeanConverterException(e);
+            throw new ServiceException(APIResultEnum.VALID_FAIL, e);
         }
     }
 
-    public static <T> T copy(Object src, T dest) throws BeanConverterException {
+    public static <T> T copy(Object src, T dest) throws ServiceException {
         return copy(src, dest, false);
     }
 
@@ -120,7 +122,7 @@ public class BeanCopyUtils {
         return copy(srcs, destClass, false);
     }
 
-    public static <T> T copy(Object src, Class<T> destClass, boolean setDefaultValForNull) throws BeanConverterException {
+    public static <T> T copy(Object src, Class<T> destClass, boolean setDefaultValForNull) throws ServiceException {
         if (src == null) {
             return null;
         }
@@ -130,11 +132,11 @@ public class BeanCopyUtils {
             copy(src, dest, setDefaultValForNull);
             return dest;
         } catch (Exception e) {
-            throw new BeanConverterException(e);
+            throw new ServiceException(APIResultEnum.VALID_FAIL, e);
         }
     }
 
-    public static <T> T copy(Object src, Class<T> destClass) throws BeanConverterException {
+    public static <T> T copy(Object src, Class<T> destClass) throws ServiceException {
         return copy(src, destClass, false);
     }
 
@@ -143,9 +145,8 @@ public class BeanCopyUtils {
      *
      * @param bean
      * @param excludeFields 排除不处理的字段
-     * @throws BeanConverterException
      */
-    public static void zeroWrapPropertiesToNull(Object bean, String... excludeFields) throws BeanConverterException {
+    public static void zeroWrapPropertiesToNull(Object bean, String... excludeFields) throws ServiceException {
         try {
             Map<String, PropertyDescriptor> srcDescriptors = getCachePropertyDescriptors(bean.getClass());
             Set<String> keys = srcDescriptors.keySet();
@@ -176,14 +177,13 @@ public class BeanCopyUtils {
 
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new BeanConverterException(e);
+            throw new ServiceException(APIResultEnum.VALID_FAIL, e);
         }
     }
 
     private static Object toValue(PropertyDescriptor srcDescriptor, Object value, Class<?> propertyType) {
-        
-    	if (propertyType == BigDecimal.class) {
+
+        if (propertyType == BigDecimal.class) {
             value = (value == null) ? new BigDecimal("0") : new BigDecimal(value.toString());
         } else if (propertyType == byte.class || propertyType == Byte.class) {
             value = (value == null) ? Byte.valueOf("0") : Byte.valueOf(value.toString());
@@ -198,10 +198,10 @@ public class BeanCopyUtils {
         } else if (propertyType == double.class || propertyType == Double.class) {
             value = (value == null) ? Double.valueOf("0") : Double.valueOf(value.toString());
         } else if (propertyType == Date.class) {
-        	if(value != null){
-        		if(srcDescriptor.getPropertyType() == String.class){
-        			value = DateUtils.parseDate(value.toString());
-        		}else if (srcDescriptor.getPropertyType() == Long.class || srcDescriptor.getPropertyType() == Integer.class || srcDescriptor.getPropertyType() == long.class || srcDescriptor.getPropertyType() == int.class) {
+            if (value != null) {
+                if (srcDescriptor.getPropertyType() == String.class) {
+                    value = DateUtils.parseDate(value.toString());
+                } else if (srcDescriptor.getPropertyType() == Long.class || srcDescriptor.getPropertyType() == Integer.class || srcDescriptor.getPropertyType() == long.class || srcDescriptor.getPropertyType() == int.class) {
                     Long val = Long.valueOf(value.toString());
                     if (val.longValue() != 0) {
                         value = new Date(val);
@@ -209,21 +209,21 @@ public class BeanCopyUtils {
                         value = null;
                     }
                 }
-        	}
-            
+            }
+
         } else if (propertyType == String.class && srcDescriptor.getPropertyType() != String.class) {
             if (value != null) {
-            	if(srcDescriptor.getPropertyType() == Date.class){
-            		value = DateUtils.format((Date)value);
-            	}else{            		
-            		value = value.toString();
-            	}
+                if (srcDescriptor.getPropertyType() == Date.class) {
+                    value = DateUtils.format((Date) value);
+                } else {
+                    value = value.toString();
+                }
             }
         } else if (propertyType == boolean.class || propertyType == Boolean.class) {
             if (value.toString().matches("[0|1]")) {
                 value = "1".equals(value.toString());
             }
-        }else{
+        } else {
             value = BeanCopyUtils.copy(value, propertyType);
         }
 
@@ -231,54 +231,54 @@ public class BeanCopyUtils {
         return value;
     }
 
-    private static Object stringConvertTo(String value,Class<?> propertyType){
-    	Object result = value;
-    	if (propertyType == BigDecimal.class) {
-    		result = new BigDecimal(value);
+    private static Object stringConvertTo(String value, Class<?> propertyType) {
+        Object result = value;
+        if (propertyType == BigDecimal.class) {
+            result = new BigDecimal(value);
         } else if (propertyType == byte.class || propertyType == Byte.class) {
-        	result = Byte.valueOf(value);
+            result = Byte.valueOf(value);
         } else if (propertyType == short.class || propertyType == Short.class) {
-        	result = Short.valueOf(value.toString());
+            result = Short.valueOf(value.toString());
         } else if (propertyType == int.class || propertyType == Integer.class) {
-        	result = Integer.parseInt(value);
+            result = Integer.parseInt(value);
         } else if (propertyType == double.class || propertyType == Double.class) {
-        	result = Double.valueOf(value.toString());
+            result = Double.valueOf(value.toString());
         } else if (propertyType == Date.class) {
-        	if(value != null){
-        		result = DateUtils.parseDate(value);
-        	}
-            
+            if (value != null) {
+                result = DateUtils.parseDate(value);
+            }
+
         } else if (propertyType == boolean.class || propertyType == Boolean.class) {
-        	result = Boolean.parseBoolean(value);
-        } 
-    	return result;
+            result = Boolean.parseBoolean(value);
+        }
+        return result;
     }
 
     public static <T> T mapToBean(Map<String, Object> map, Class<T> clazz) {
         if (map == null || map.isEmpty()) {
             return null;
         }
-        
-        try {	   	
-        	T bean = clazz.newInstance();
-        	Map<String, PropertyDescriptor> descriptors = getCachePropertyDescriptors(clazz);
-        	for (PropertyDescriptor descriptor : descriptors.values()) {
-        		String propertyName = descriptor.getName();
-        		if(map.containsKey(propertyName)){
-        			Object object = map.get(propertyName);
-					if(object == null) {
+
+        try {
+            T bean = clazz.newInstance();
+            Map<String, PropertyDescriptor> descriptors = getCachePropertyDescriptors(clazz);
+            for (PropertyDescriptor descriptor : descriptors.values()) {
+                String propertyName = descriptor.getName();
+                if (map.containsKey(propertyName)) {
+                    Object object = map.get(propertyName);
+                    if (object == null) {
                         continue;
                     }
-					if(object instanceof String){						
-						object = stringConvertTo(object.toString(),descriptor.getPropertyType());
-					}
-        			descriptor.getWriteMethod().invoke(bean, object);
-        		}
-        	}
-        	return bean;
-		} catch (Exception e) {
-			throw new BeanConverterException(e);
-		}
+                    if (object instanceof String) {
+                        object = stringConvertTo(object.toString(), descriptor.getPropertyType());
+                    }
+                    descriptor.getWriteMethod().invoke(bean, object);
+                }
+            }
+            return bean;
+        } catch (Exception e) {
+            throw new ServiceException(APIResultEnum.VALID_FAIL, e);
+        }
     }
 
     public static Map<String, Object> beanToMap(Object bean) {
@@ -294,7 +294,7 @@ public class BeanCopyUtils {
                 }
             }
         } catch (Exception e) {
-            throw new BeanConverterException(e);
+            throw new ServiceException(APIResultEnum.VALID_FAIL, e);
         }
 
 
@@ -302,56 +302,65 @@ public class BeanCopyUtils {
 
     }
 
-    private static  Map<String, PropertyDescriptor> getCachePropertyDescriptors(Class<?> clazz) throws IntrospectionException {
+    private static Map<String, PropertyDescriptor> getCachePropertyDescriptors(Class<?> clazz) throws ServiceException {
         String canonicalName = clazz.getCanonicalName();
         Map<String, PropertyDescriptor> map = cache.get(canonicalName);
 
-        if (map == null) {
-            map = doCacheClass(clazz, canonicalName);
+        try {
+            if (map == null) {
+                map = doCacheClass(clazz, canonicalName);
+            }
+        } catch (IntrospectionException e) {
+            throw new ServiceException(APIResultEnum.VALID_FAIL, e);
         }
 
         return map;
     }
-    
+
     @SuppressWarnings("unused")
-	private static List<String> getClassFields(Class<?> clazz) throws IntrospectionException{
-    	String canonicalName = clazz.getCanonicalName();
-    	
-    	if(!fieldCache.containsKey(canonicalName)){
-    		doCacheClass(clazz, canonicalName);
-    	}
-    	return fieldCache.get(canonicalName);
+    private static List<String> getClassFields(Class<?> clazz) throws ServiceException {
+        String canonicalName = clazz.getCanonicalName();
+
+        try {
+            if (!fieldCache.containsKey(canonicalName)) {
+                doCacheClass(clazz, canonicalName);
+            }
+        } catch (IntrospectionException e) {
+            throw new ServiceException(APIResultEnum.VALID_FAIL, e);
+        }
+
+        return fieldCache.get(canonicalName);
     }
 
-	/**
-	 * @param clazz
-	 * @param canonicalName
-	 * @return
-	 * @throws IntrospectionException
-	 */
-	private synchronized static Map<String, PropertyDescriptor> doCacheClass(Class<?> clazz, String canonicalName)
-			throws IntrospectionException {
-		if(cache.containsKey(canonicalName)) {
+    /**
+     * @param clazz
+     * @param canonicalName
+     * @return
+     * @throws IntrospectionException
+     */
+    private synchronized static Map<String, PropertyDescriptor> doCacheClass(Class<?> clazz, String canonicalName)
+            throws IntrospectionException {
+        if (cache.containsKey(canonicalName)) {
             return cache.get(canonicalName);
         }
-		
-		Map<String, PropertyDescriptor> map = new ConcurrentHashMap<>();
-		
-		List<String> fieldNames = new ArrayList<>();
 
-		BeanInfo srcBeanInfo = Introspector.getBeanInfo(clazz);
+        Map<String, PropertyDescriptor> map = new ConcurrentHashMap<>();
 
-		PropertyDescriptor[] descriptors = srcBeanInfo.getPropertyDescriptors();
-		for (PropertyDescriptor descriptor : descriptors) {
-			
-			fieldNames.add(descriptor.getName());
-			
-		    Method readMethod = descriptor.getReadMethod();
-		    Method writeMethod = descriptor.getWriteMethod();
+        List<String> fieldNames = new ArrayList<>();
 
-		    String name = descriptor.getName();
+        BeanInfo srcBeanInfo = Introspector.getBeanInfo(clazz);
 
-		    if (readMethod == null) {
+        PropertyDescriptor[] descriptors = srcBeanInfo.getPropertyDescriptors();
+        for (PropertyDescriptor descriptor : descriptors) {
+
+            fieldNames.add(descriptor.getName());
+
+            Method readMethod = descriptor.getReadMethod();
+            Method writeMethod = descriptor.getWriteMethod();
+
+            String name = descriptor.getName();
+
+            if (readMethod == null) {
                 try {
                     readMethod = clazz.getMethod("get" + name.substring(0, 1).toUpperCase() + name.substring(1));
 
@@ -360,7 +369,7 @@ public class BeanCopyUtils {
                 }
             }
 
-		    if (writeMethod == null) {
+            if (writeMethod == null) {
                 try {
                     writeMethod = clazz.getMethod("set" + name.substring(0, 1).toUpperCase() + name.substring(1), descriptor.getPropertyType());
 
@@ -369,58 +378,53 @@ public class BeanCopyUtils {
                 }
             }
 
-		    if (readMethod != null && writeMethod != null) {
-		        map.put(descriptor.getName(), descriptor);
-		    }
-		}
+            if (readMethod != null && writeMethod != null) {
+                map.put(descriptor.getName(), descriptor);
+            }
+        }
 
-		cache.put(canonicalName, map);
-		fieldCache.put(canonicalName, fieldNames);
-		return map;
-	}
-    
-    
+        cache.put(canonicalName, map);
+        fieldCache.put(canonicalName, fieldNames);
+        return map;
+    }
+
+
     /**
      * 判断是否基本类型
+     *
      * @param clazz
      * @return
      * @throws Exception
      */
-   public static boolean isSimpleDataType(Object o) {   
-	   Class<? extends Object> clazz = o.getClass();
-       return 
-       (   
-           clazz.equals(String.class) ||   
-           clazz.equals(Integer.class)||   
-           clazz.equals(Byte.class) ||   
-           clazz.equals(Long.class) ||   
-           clazz.equals(Double.class) ||   
-           clazz.equals(Float.class) ||   
-           clazz.equals(Character.class) ||   
-           clazz.equals(Short.class) ||   
-           clazz.equals(BigDecimal.class) ||     
-           clazz.equals(Boolean.class) ||   
-           clazz.equals(Date.class) ||   
-           clazz.isPrimitive()   
-       );   
-   }
+    public static boolean isSimpleDataType(Object o) {
+        Class<? extends Object> clazz = o.getClass();
+        return
+                (
+                        clazz.equals(String.class) ||
+                                clazz.equals(Integer.class) ||
+                                clazz.equals(Byte.class) ||
+                                clazz.equals(Long.class) ||
+                                clazz.equals(Double.class) ||
+                                clazz.equals(Float.class) ||
+                                clazz.equals(Character.class) ||
+                                clazz.equals(Short.class) ||
+                                clazz.equals(BigDecimal.class) ||
+                                clazz.equals(Boolean.class) ||
+                                clazz.equals(Date.class) ||
+                                clazz.isPrimitive()
+                );
+    }
+
+    //================================复制非空属性=========================================
 
 
-    public static class BeanConverterException extends RuntimeException {
-        private static final long serialVersionUID = 152873897614690397L;
-
-        public BeanConverterException(Throwable cause) {
-            super(cause);
+    public static void copyPropertiesNotNull(Object dest, Object orig) throws ServiceException {
+        try {
+            NullAwareBeanUtilsBean.getInstance().copyProperties(dest, orig);
+        } catch (Exception e) {
+            throw new ServiceException(APIResultEnum.VALID_FAIL, e);
         }
     }
-    
-   //================================复制非空属性=========================================
-
-
-
-   public static void copyPropertiesNotNull(Object dest, Object orig) throws InvocationTargetException, IllegalAccessException {
-       NullAwareBeanUtilsBean.getInstance().copyProperties(dest, orig);
-   }
 
     private static class NullAwareBeanUtilsBean extends BeanUtilsBean {
 
@@ -434,7 +438,7 @@ public class BeanCopyUtils {
                 }
 
                 @Override
-                public PropertyDescriptor getPropertyDescriptor(Object bean, String name) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+                public PropertyDescriptor getPropertyDescriptor(Object bean, String name) {
                     return BeanUtils.getPropertyDescriptor(bean.getClass(), name);
                 }
             });
@@ -448,11 +452,15 @@ public class BeanCopyUtils {
         }
 
         @Override
-        public void copyProperty(Object bean, String name, Object value) throws IllegalAccessException, InvocationTargetException {
+        public void copyProperty(Object bean, String name, Object value) throws ServiceException {
             if (value == null) {
                 return;
             }
-            super.copyProperty(bean, name, value);
+            try {
+                super.copyProperty(bean, name, value);
+            } catch (Exception e) {
+                throw new ServiceException(APIResultEnum.VALID_FAIL, e);
+            }
         }
     }
 }

@@ -17,22 +17,24 @@ public interface IBaseRedisService {
     
     public String get(String key);  
       
-    public boolean expire(String key,long expire);  
-    
+    public boolean expire(String key, long expire);
+
     public <T> boolean setObject(String key, T entity);
-    
+
     public <T> boolean setObject(String key, T entity, Long expire);
-	  
-    public <T> T getObject(String key,Class<T> clz);
-      
-    public <T> boolean setList(String key ,List<T> list);  
-      
-    public <T> List<T> getList(String key,Class<T> clz);  
-      
-    public long lpush(String key,Object obj);  
-      
-    public long rpush(String key,Object obj);  
+
+    public <T> T getObject(String key, Class<T> clz);
+
+    public <T> boolean setList(String key, List<T> list);
+
+    public <T> List<T> getList(String key, Class<T> clz);
+
+    public long lpush(String key, Object obj);
+
+    public long rpush(String key, Object obj);
       
     public String lpop(String key);
+
+	public Object hGetAll(String key);
     
 }
