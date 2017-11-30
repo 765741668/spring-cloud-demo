@@ -18,6 +18,8 @@
 		<module>msg-service</module>
 		<module>user-service</module>
 		<module>demo-service</module>
+        <module>simpleservice</module>
+		<module>simple-service</module>
 	</modules>
 
 

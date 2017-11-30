@@ -48,12 +48,6 @@ public class DemoController {
 		return APIResultUtil.success(null);
 	}
 
-	@PutMapping("/update2")
-	public APIResult update2(@RequestBody UserVO user) {
-		userServiceRestClient.update2(user);
-		return APIResultUtil.success(null);
-	}
-
 	@DeleteMapping("/delete/{id}")
 	public APIResult delete(@PathVariable Long id) {
 		userServiceRestClient.delete(id);
