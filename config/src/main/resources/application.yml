@@ -1,0 +1,38 @@
+server:
+  port: 8888
+
+eureka:
+  instance:
+    hostname: localhost
+    prefer-ip-address: true
+    metadata-map:
+      user.name: ${security.user.name}
+      user.password: ${security.user.password}
+  client:
+    service-url:
+      defaultZone: http://user:${REGISTRY_SERVER_PASSWORD:password}@registry:8761/eureka/
+
+spring:
+  cloud:
+    config:
+      server:
+        #1.读取远程GIT仓库目录
+#        git:
+#          uri: https://github.com/765741668/spring-cloud-demo
+#          search-paths: config-repo
+#          username: a765741668@sina.com #公有项目不用配置用户名密码
+#          password: 123456
+
+        #2.读取本地配置目录
+        native:
+          search-locations: F:/GitProjects/spring-cloud-demo/config-repo
+  profiles:
+    active: native #native 、 git
+
+  rabbitmq:
+    host: rabbitmq
+
+security:
+  user:
+    name: user
+    password: ${CONFIG_SERVER_PASSWORD:password}
